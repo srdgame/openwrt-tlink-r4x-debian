@@ -1,0 +1,17 @@
+SUBSYSTEM!="leds", GOTO="leds_end"
+ACTION!="add", GOTO="leds_end"
+
+# LAN leds, green for link, amber for traffix
+KERNEL=="green:lan", ATTR{trigger}="netdev", ATTR{link}="1", ATTR{device_name}="end0"
+KERNEL=="amber:lan", ATTR{trigger}="netdev", ATTR{rx}="1", ATTR{tx}="1", ATTR{device_name}="end0"
+
+# WAN leds, green for link, amber for traffix
+KERNEL=="mdio-bus:0f:green:wan", ATTR{trigger}="netdev", ATTR{link}="1", ATTR{device_name}="end1"
+KERNEL=="mdio-bus:0f:amber:wan", ATTR{trigger}="netdev", ATTR{rx}="1", ATTR{tx}="1", ATTR{device_name}="end1"
+
+# White status led for heartbeat
+KERNEL=="white:status", ATTR{trigger}="heartbeat"
+# Red status led for kernel panic
+KERNEL=="red:status", ATTR{trigger}="panic"
+
+LABEL="leds_end"

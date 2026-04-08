@@ -1,0 +1,51 @@
+---
+name: Create images for distribution
+on:
+  push:
+    branches-ignore:
+      - "gh-readonly-queue/**"
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+jobs:
+  build-system-image:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/go-debos/debos:main
+      options: --device=/dev/kvm
+    steps:
+      - uses: actions/checkout@v6
+      - run: >
+          debos --fakemachine-backend=kvm
+          --print-recipe
+          -t image:openwrt-tlink-r4x-debian-$(date +%Y%m%d%H%M%S).img
+          system/system.yaml
+      - name: recovery image
+        uses: actions/upload-artifact@v6
+        with:
+          name: system
+          path: "*.img*"
+  publish:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs:
+      - build-system-image
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v7
+        with:
+          name: system
+      - run: find
+      - run: |
+          gh release delete latest --yes || true
+          git push origin :latest || true
+      - run: >
+          gh release create latest
+          --prerelease
+          --generate-notes
+          --notes-file .github/workflows/dist-notes.md
+          --target $GITHUB_SHA *.zst *.bmap
