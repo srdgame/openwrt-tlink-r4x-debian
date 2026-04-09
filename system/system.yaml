@@ -45,6 +45,11 @@ actions:
       - openssh-server
       - iproute2
       - initramfs-tools
+      - tinc
+      - iptables
+      - net-tools
+      - unzip
+      - cockpit
 
   - action: overlay
     description: Put in local openwrt kernel
