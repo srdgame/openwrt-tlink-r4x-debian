@@ -13,12 +13,15 @@ jobs:
     container:
       image: ghcr.io/go-debos/debos:main
       options: --device=/dev/kvm
+    env:
+      GH_DEBIAN_PASSWD: ${{ secrets.DEBIAN_PASSWD }}
     steps:
       - uses: actions/checkout@v6
       - run: >
           debos --fakemachine-backend=kvm
           --print-recipe
           -t image:openwrt-tlink-r4x-debian-$(date +%Y%m%d%H%M%S).img
+          -t passwd:$GH_DEBIAN_PASSWD
           system/system.yaml
       - name: recovery image
         uses: actions/upload-artifact@v6

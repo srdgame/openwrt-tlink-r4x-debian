@@ -1,6 +1,7 @@
 {{ $suite := or .suite "trixie" }}
 {{ $cmdline := or .cmdline "fw_devlink=permissive clk_ignore_unused" }}
 {{ $image := or .image "openwrt.img" }}
+{{ $passwd := or .passwd "admin@1234" }}
 
 architecture: arm64
 
@@ -52,8 +53,7 @@ actions:
 
   - action: overlay
     description: Put in local openwrt kernel modules
-    source: overlays/lib/modules
-    destination: /lib/modules
+    source: overlays/modules
 
   - action: overlay
     description: Configure networking
@@ -107,11 +107,11 @@ actions:
     description: Setup system for first boot
     chroot: true
     command: |
-      echo 'root:!unprovisioned' | chpasswd -c NONE
-      rm -f /etc/hostname
-      rm -f /etc/hosts
+      echo 'root:{{ $passwd }}' | chpasswd
       echo uninitialized > /etc/machine-id
       rm -f /etc/ssh/ssh_host_*
+      systemctl enable serial-getty@ttyS0.service
+      depmod 6.6.129
 
 # dd uboot to img
   - action: run
