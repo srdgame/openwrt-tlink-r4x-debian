@@ -1,0 +1,12 @@
+[Unit]
+Description=Setup TAP interfaces for NetworkManager
+After=network.target NetworkManager.service
+Requires=NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=nmcli con up br-symbridge
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

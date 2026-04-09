@@ -1,0 +1,12 @@
+# -*- conf -*-
+
+[Unit]
+Description=symbridge
+Before=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/tincd -n symbridge
+
+[Install]
+WantedBy=multi-user.target
