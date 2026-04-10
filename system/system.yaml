@@ -80,7 +80,7 @@ actions:
   - action: image-partition
     imagename: {{ $image }}
     partitiontype: msdos
-    imagesize: 1G
+    imagesize: 2G
     mountpoints:
       - mountpoint: /
         partition: root
