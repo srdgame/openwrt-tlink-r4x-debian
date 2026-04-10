@@ -1,8 +1,8 @@
 [Match]
-Name=lan3
+Name=lan2
 
 [Network]
-Address=192.168.3.248/24
+Address=192.168.2.248/24
 
 [Link]
 RequiredForOnline=no
