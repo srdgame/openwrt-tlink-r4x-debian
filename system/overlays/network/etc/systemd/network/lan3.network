@@ -1,5 +1,5 @@
 [Match]
-Name=lan3
+AlternativeName=lan3
 
 [Network]
 Address=192.168.3.248/24
