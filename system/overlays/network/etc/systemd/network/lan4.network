@@ -1,0 +1,5 @@
+[Match]
+Name=lan4
+
+[Network]
+Address=192.168.4.248/24
