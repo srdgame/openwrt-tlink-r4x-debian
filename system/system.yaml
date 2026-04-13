@@ -79,6 +79,7 @@ actions:
       systemctl enable hostapd@wlan1
       systemctl mask NetworkManager-wait-online.service
       systemctl mask systemd-networkd-wait-online.service
+      systemctl mask systemd-random-seed.service
 
   - action: image-partition
     imagename: {{ $image }}
