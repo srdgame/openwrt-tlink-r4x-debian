@@ -25,10 +25,10 @@ actions:
     packages:
       - systemd
       - systemd-repart
+      - systemd-resolved
       - systemd-sysv
       - systemd-timesyncd
       - udev
-      - network-manager
 
   - action: apt
     description: Install other tools
@@ -38,8 +38,6 @@ actions:
       - hostapd
       - wireless-regdb
       - iw
-      - firmware-mediatek
-      - firmware-misc-nonfree
       - vim
       - curl
       - openssh-server
@@ -50,7 +48,6 @@ actions:
       - net-tools
       - iputils-ping
       - unzip
-      - cockpit
 
   - action: overlay
     description: Put in local openwrt kernel
@@ -77,6 +74,15 @@ actions:
       systemctl enable hostapd@wlan0
       systemctl enable hostapd@wlan1
       systemctl enable serial-getty@ttyS0.service
+      systemctl mask systemd-networkd.service
+
+  - action:run
+    description: Install Webmin
+    chroot: true
+    command: |
+      curl -o /tmp/webmin-setup-repo.sh https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repo.sh
+      sh webmin-setup-repo.sh
+      apt-get install webmin --install-recommends
 
   - action: image-partition
     imagename: {{ $image }}
