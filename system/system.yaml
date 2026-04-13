@@ -73,10 +73,10 @@ actions:
     description: Enable network services
     chroot: true
     command: |
-      systemctl enable systemd-networkd
       systemctl enable systemd-timesyncd
       systemctl enable hostapd@wlan0
       systemctl enable hostapd@wlan1
+      systemctl enable serial-getty@ttyS0.service
 
   - action: image-partition
     imagename: {{ $image }}
@@ -121,7 +121,6 @@ actions:
       echo uninitialized > /etc/machine-id
       rm -f /etc/ssh/ssh_host_*
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-      systemctl enable serial-getty@ttyS0.service
       depmod 6.6.129
 
 # dd uboot to img
