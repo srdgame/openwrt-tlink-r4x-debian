@@ -116,7 +116,7 @@ actions:
     chroot: true
     command: |
       echo 'root:{{ $passwd }}' | chpasswd
-      useradd -s bash admin
+      useradd -s /bin/bash admin
       echo 'admin:admin' | chpasswd
       usermod -aG sudo admin
       echo ThingsLink > /etc/hostname
