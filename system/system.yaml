@@ -80,8 +80,9 @@ actions:
     description: Install Webmin
     chroot: true
     command: |
-      curl -o /tmp/webmin-setup-repo.sh https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repo.sh
+      curl -o webmin-setup-repo.sh https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repo.sh
       sh webmin-setup-repo.sh
+      rm webmin-setup-repo.sh
       apt-get install webmin --install-recommends
 
   - action: image-partition
