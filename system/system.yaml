@@ -76,6 +76,7 @@ actions:
       systemctl mask systemd-networkd.socket
       systemctl mask systemd-network-generator.service
       systemctl mask systemd-random-seed.service
+      systemctl mask systemd-networkd-wait-online.service
 
   - action: apt
     description: Install cockpit
@@ -127,6 +128,26 @@ actions:
       rm -f /etc/ssh/ssh_host_*
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
       depmod 6.6.129
+
+  - action: run
+    description: Setup Network-Mananger default settings
+    chroot: true
+    command: |
+# 删除所有连接
+      nmcli con delete $( nmcli connection | awk 'NR>1 && !/lo/ {print$1}' )
+# 添加桥接接口 br-lan
+      nmcli con add type bridge ifname br-lan con-name br-lan
+      nmcli con mod br-lan ipv4.addresses 192.168.0.238/24
+      nmcli con mod br-lan ipv4.method manual
+      nmcli con mod br-lan ipv6.method ignore
+      nmcli con mod br-lan connection.autoconnect yes
+# 添加桥接从接口
+      sudo nmcli con add type ethernet ifname lan1 con-name br-lan1 master br-lan
+      nmcli con add type tun ifname symbridge con-name br-symbridge mode tap
+      nmcli con mod br-symbridge master br-lan slave-type bridge
+      nmcli con mod br-symbridge connection.autoconnect yes
+      nmcli con add type tun ifname symrouter con-name br-symrouter mode tap
+      nmcli con mod br-symrouter connection.autoconnect yes
 
 # dd uboot to img
   - action: run
