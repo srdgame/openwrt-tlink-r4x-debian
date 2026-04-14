@@ -133,8 +133,6 @@ actions:
     description: Setup Network-Mananger default settings
     chroot: true
     command: |
-# 删除所有连接
-      nmcli con delete $( nmcli connection | awk 'NR>1 && !/lo/ {print$1}' )
 # 添加桥接接口 br-lan
       nmcli con add type bridge ifname br-lan con-name br-lan
       nmcli con mod br-lan ipv4.addresses 192.168.0.238/24
