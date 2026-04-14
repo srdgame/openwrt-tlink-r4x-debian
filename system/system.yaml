@@ -76,7 +76,7 @@ actions:
       systemctl enable serial-getty@ttyS0.service
       systemctl mask systemd-networkd.service
 
-  - action:run
+  - action: run
     description: Install Webmin
     chroot: true
     command: |
