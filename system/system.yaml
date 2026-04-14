@@ -138,7 +138,7 @@ actions:
       nmcli con mod br-lan ipv4.method manual
       nmcli con mod br-lan ipv6.method ignore
       nmcli con mod br-lan connection.autoconnect yes
-      sudo nmcli con add type ethernet ifname lan1 con-name br-lan1 master br-lan
+      nmcli con add type ethernet ifname lan1 con-name br-lan1 master br-lan
       nmcli con add type tun ifname symbridge con-name br-symbridge mode tap
       nmcli con mod br-symbridge master br-lan slave-type bridge
       nmcli con mod br-symbridge connection.autoconnect yes
