@@ -1,0 +1,12 @@
+[connection]
+id=br-symbridge
+uuid=e185b143-6088-415b-8648-bb5a2f535112
+type=tun
+controller=br-lan
+interface-name=symbridge
+port-type=bridge
+
+[tun]
+mode=2
+
+[bridge-port]

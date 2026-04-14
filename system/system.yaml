@@ -129,22 +129,6 @@ actions:
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
       depmod 6.6.129
 
-  - action: run
-    description: Setup Network-Mananger default settings
-    chroot: true
-    command: |
-      nmcli con add type bridge ifname br-lan con-name br-lan
-      nmcli con mod br-lan ipv4.addresses 192.168.0.238/24
-      nmcli con mod br-lan ipv4.method manual
-      nmcli con mod br-lan ipv6.method ignore
-      nmcli con mod br-lan connection.autoconnect yes
-      nmcli con add type ethernet ifname lan1 con-name br-lan1 master br-lan
-      nmcli con add type tun ifname symbridge con-name br-symbridge mode tap
-      nmcli con mod br-symbridge master br-lan slave-type bridge
-      nmcli con mod br-symbridge connection.autoconnect yes
-      nmcli con add type tun ifname symrouter con-name br-symrouter mode tap
-      nmcli con mod br-symrouter connection.autoconnect yes
-
 # dd uboot to img
   - action: run
     description: Install u-boot to {{ $image }}

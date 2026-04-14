@@ -1,0 +1,17 @@
+[connection]
+id=br-symrouter
+uuid=cf6bc2c4-4630-439b-9905-c54cf6765c2b
+type=tun
+interface-name=symrouter
+
+[tun]
+mode=2
+
+[ipv4]
+method=auto
+
+[ipv6]
+addr-gen-mode=default
+method=auto
+
+[proxy]
