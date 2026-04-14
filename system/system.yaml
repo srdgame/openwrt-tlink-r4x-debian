@@ -133,13 +133,11 @@ actions:
     description: Setup Network-Mananger default settings
     chroot: true
     command: |
-# 添加桥接接口 br-lan
       nmcli con add type bridge ifname br-lan con-name br-lan
       nmcli con mod br-lan ipv4.addresses 192.168.0.238/24
       nmcli con mod br-lan ipv4.method manual
       nmcli con mod br-lan ipv6.method ignore
       nmcli con mod br-lan connection.autoconnect yes
-# 添加桥接从接口
       sudo nmcli con add type ethernet ifname lan1 con-name br-lan1 master br-lan
       nmcli con add type tun ifname symbridge con-name br-symbridge mode tap
       nmcli con mod br-symbridge master br-lan slave-type bridge
