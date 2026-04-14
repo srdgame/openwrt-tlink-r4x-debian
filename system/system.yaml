@@ -83,7 +83,13 @@ actions:
       curl -o webmin-setup-repo.sh https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repo.sh
       sh webmin-setup-repo.sh -f
       rm webmin-setup-repo.sh
-      apt-get install webmin --install-recommends
+      apt-get install -y webmin
+
+  - action: apt
+    description: Install systemd
+    recommends: false
+    packages:
+      - webmin
 
   - action: image-partition
     imagename: {{ $image }}
