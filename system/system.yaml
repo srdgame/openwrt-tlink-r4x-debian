@@ -24,8 +24,6 @@ actions:
     recommends: true
     packages:
       - systemd
-      - systemd-repart
-      - systemd-resolved
       - systemd-sysv
       - systemd-timesyncd
       - udev
@@ -45,9 +43,9 @@ actions:
       - initramfs-tools
       - tinc
       - iptables
-      - net-tools
       - iputils-ping
       - unzip
+      - net-tools
 
   - action: overlay
     description: Put in local openwrt kernel
@@ -75,21 +73,14 @@ actions:
       systemctl enable hostapd@wlan1
       systemctl enable serial-getty@ttyS0.service
       systemctl mask systemd-networkd.service
-
-  - action: run
-    description: Install Webmin
-    chroot: true
-    command: |
-      curl -o webmin-setup-repo.sh https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repo.sh
-      sh webmin-setup-repo.sh -f
-      rm webmin-setup-repo.sh
-      apt-get install -y webmin
+      systemctl mask systemd-networkd.socket
+      systemctl mask systemd-network-generator.service
 
   - action: apt
-    description: Install systemd
-    recommends: false
+    description: Install cockpit
+    recommends: true
     packages:
-      - webmin
+      - cockpit
 
   - action: image-partition
     imagename: {{ $image }}
