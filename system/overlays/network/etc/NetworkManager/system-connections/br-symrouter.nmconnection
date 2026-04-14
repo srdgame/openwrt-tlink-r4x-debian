@@ -8,7 +8,8 @@ interface-name=symrouter
 mode=2
 
 [ipv4]
-method=auto
+address1=10.222.0.1/24
+method=manual
 
 [ipv6]
 addr-gen-mode=default
