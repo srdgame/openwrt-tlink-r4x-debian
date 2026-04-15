@@ -23,8 +23,16 @@ actions:
     description: Install systemd
     recommends: true
     packages:
-      - sudo
+      - systemd
       - systemd-sysv
+      - systemd-timesyncd
+      - udev
+
+  - action: apt
+    description: Install other tools
+    update: false
+    recommends: true
+    packages:
       - hostapd
       - wireless-regdb
       - iw
