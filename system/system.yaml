@@ -46,6 +46,7 @@ actions:
       - iputils-ping
       - unzip
       - net-tools
+      - cockpit
 
   - action: overlay
     description: Put in local openwrt kernel
@@ -78,11 +79,18 @@ actions:
       systemctl mask systemd-random-seed.service
       systemctl mask systemd-networkd-wait-online.service
 
-  - action: apt
-    description: Install cockpit
-    recommends: true
-    packages:
-      - cockpit
+  - action: run
+    description: Create kernel module depends
+    chroot: true
+    command: |
+      depmod 6.6.129
+
+  - action: run
+    description: Fixed NetworkManager connections file permission
+    chroot: true
+    command: |
+      chmod 600 /etc/NetworkManager/system-connections/*
+      ls -l /etc/NetworkManager/system-connections/*
 
   - action: image-partition
     imagename: {{ $image }}
@@ -127,8 +135,6 @@ actions:
       echo uninitialized > /etc/machine-id
       rm -f /etc/ssh/ssh_host_*
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-      depmod 6.6.129
-      chmod 600 /etc/NetworkManager/system-connections/*
 
 # dd uboot to img
   - action: run
