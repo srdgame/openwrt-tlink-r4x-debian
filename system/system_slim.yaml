@@ -82,13 +82,6 @@ actions:
     command: |
       depmod 6.6.129
 
-  - action: run
-    description: Fixed NetworkManager connections file permission
-    chroot: true
-    command: |
-      chmod 600 /etc/NetworkManager/system-connections/*
-      ls -l /etc/NetworkManager/system-connections/*
-
   - action: image-partition
     imagename: {{ $image }}
     partitiontype: msdos
