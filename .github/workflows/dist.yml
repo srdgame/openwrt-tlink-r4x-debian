@@ -55,6 +55,7 @@ jobs:
       contents: write
     needs:
       - build-system-image
+      - build-system-slim-image
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
