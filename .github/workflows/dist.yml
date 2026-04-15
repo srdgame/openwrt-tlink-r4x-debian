@@ -28,6 +28,26 @@ jobs:
         with:
           name: system
           path: "*.img*"
+  build-system-slim-image:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/go-debos/debos:main
+      options: --device=/dev/kvm
+    env:
+      GH_DEBIAN_PASSWD: ${{ secrets.DEBIAN_PASSWD }}
+    steps:
+      - uses: actions/checkout@v6
+      - run: >
+          debos --fakemachine-backend=kvm
+          --print-recipe
+          -t image:openwrt-tlink-r4x-debian-slim-$(date +%Y%m%d%H%M%S).img
+          -t passwd:$GH_DEBIAN_PASSWD
+          system/system_slim.yaml
+      - name: recovery image
+        uses: actions/upload-artifact@v6
+        with:
+          name: system-slim
+          path: "*.img*"
   publish:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
@@ -42,6 +62,9 @@ jobs:
       - uses: actions/download-artifact@v7
         with:
           name: system
+      - uses: actions/download-artifact@v7
+        with:
+          name: system-slim
       - run: find
       - run: |
           gh release delete latest --yes || true

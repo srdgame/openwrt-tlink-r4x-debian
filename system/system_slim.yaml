@@ -1,0 +1,148 @@
+{{ $suite := or .suite "trixie" }}
+{{ $cmdline := or .cmdline "fw_devlink=permissive clk_ignore_unused" }}
+{{ $image := or .image "openwrt.img" }}
+{{ $passwd := or .passwd "admin@1234" }}
+
+architecture: arm64
+
+actions:
+  - action: mmdebstrap
+    description: Bootstrap Debian {{ $suite }}
+    suite: {{ $suite }}
+    components:
+      - main
+      - non-free-firmware
+    mirror: https://deb.debian.org/debian
+    variant: minbase
+
+  - action: overlay
+    description: Setup apt repositories
+    source: overlays/debian-backports
+
+  - action: apt
+    description: Install systemd
+    recommends: true
+    packages:
+      - systemd
+      - systemd-sysv
+      - systemd-timesyncd
+      - udev
+
+  - action: apt
+    description: Install other tools
+    update: false
+    recommends: true
+    packages:
+      - hostapd
+      - wireless-regdb
+      - iw
+      - vim
+      - curl
+      - openssh-server
+      - iproute2
+      - initramfs-tools
+      - tinc
+      - iptables
+      - iputils-ping
+      - unzip
+      - net-tools
+
+  - action: overlay
+    description: Put in local openwrt kernel
+    source: overlays/kernel
+    destination: /kernel
+
+  - action: overlay
+    description: Put in local openwrt kernel modules
+    source: overlays/modules
+
+  - action: overlay
+    description: Configure networking
+    source: overlays/network
+
+  - action: overlay
+    description: Misc configuration
+    source: overlays/config
+
+  - action: run
+    description: Enable network services
+    chroot: true
+    command: |
+      systemctl enable systemd-timesyncd
+      systemctl enable hostapd@wlan0
+      systemctl enable hostapd@wlan1
+      systemctl enable serial-getty@ttyS0.service
+
+  - action: run
+    description: Create kernel module depends
+    chroot: true
+    command: |
+      depmod 6.6.129
+
+  - action: run
+    description: Fixed NetworkManager connections file permission
+    chroot: true
+    command: |
+      chmod 600 /etc/NetworkManager/system-connections/*
+      ls -l /etc/NetworkManager/system-connections/*
+
+  - action: image-partition
+    imagename: {{ $image }}
+    partitiontype: msdos
+    imagesize: 2G
+    mountpoints:
+      - mountpoint: /
+        partition: root
+        options:
+          - x-systemd.growfs
+      - mountpoint: /kernel
+        partition: kernel
+        options: [ x-systemd.automount ]
+    partitions:
+      - name: kernel
+        # partlabel: kernel
+        parttype: 83
+        fs: ext4
+        start: 32MiB
+        end: 62MiB
+      - name: root
+        # partlabel: root
+        # root arm64
+        parttype: 83
+        fs: ext4
+        start: 64MiB
+        end: 100%
+
+  - action: filesystem-deploy
+    append-kernel-cmdline: "{{ $cmdline }}"
+
+# This needs to run last as apt gets unhappy without machine-id
+  - action: run
+    description: Setup system for first boot
+    chroot: true
+    command: |
+      echo 'root:{{ $passwd }}' | chpasswd
+      useradd -s /bin/bash admin
+      echo 'admin:admin' | chpasswd
+      usermod -aG sudo admin
+      echo ThingsLink > /etc/hostname
+      echo uninitialized > /etc/machine-id
+      rm -f /etc/ssh/ssh_host_*
+      sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# dd uboot to img
+  - action: run
+    description: Install u-boot to {{ $image }}
+    postprocess: true
+    command: dd if=system/overlays/uboot/tlink-r4x-rk3568-u-boot-rockchip.bin of={{ $image }} seek=64 conv=notrunc
+
+  - action: run
+    description: Create block map for {{ $image }}
+    chroot: false
+    postprocess: true
+    command: cd $ARTIFACTDIR; bmaptool create {{ $image }} > {{ $image }}.bmap
+
+  - action: run
+    description: Compress {{ $image }}
+    postprocess: true
+    command: cd $ARTIFACTDIR; zstd --rm -f {{ $image }}
