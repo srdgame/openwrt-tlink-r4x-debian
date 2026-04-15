@@ -24,6 +24,8 @@ actions:
     recommends: true
     packages:
       - systemd
+      - systemd-repart
+      - systemd-resolved
       - systemd-sysv
       - systemd-timesyncd
       - udev
@@ -58,7 +60,7 @@ actions:
 
   - action: overlay
     description: Configure networking
-    source: overlays/network
+    source: overlays/network.slim
 
   - action: overlay
     description: Misc configuration
@@ -68,6 +70,7 @@ actions:
     description: Enable network services
     chroot: true
     command: |
+      systemctl enable systemd-networkd
       systemctl enable systemd-timesyncd
       systemctl enable hostapd@wlan0
       systemctl enable hostapd@wlan1
