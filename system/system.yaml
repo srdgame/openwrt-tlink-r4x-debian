@@ -71,9 +71,9 @@ actions:
     command: |
       systemctl enable systemd-timesyncd
       systemctl enable hostapd@wlan0
-      systemctl enable hostapd@wlan1
       systemctl enable serial-getty@ttyS0
       systemctl mask systemd-networkd
+      systemctl mask systemd-networkd.socket
       systemctl mask systemd-network-generator
       systemctl mask systemd-random-seed
       systemctl mask systemd-networkd-wait-online
