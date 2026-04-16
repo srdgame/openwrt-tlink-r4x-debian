@@ -69,14 +69,11 @@ actions:
     description: Enable network services
     chroot: true
     command: |
+      systemctl enable systemd-networkd
       systemctl enable systemd-timesyncd
       systemctl enable hostapd@wlan0
       systemctl enable hostapd@wlan1
       systemctl enable serial-getty@ttyS0.service
-      systemctl mask systemd-networkd.service
-      systemctl mask systemd-networkd.socket
-      systemctl mask systemd-network-generator.service
-      systemctl mask systemd-random-seed.service
       systemctl mask systemd-networkd-wait-online.service
       systemctl mask NetworkManager-wait-online.service
 

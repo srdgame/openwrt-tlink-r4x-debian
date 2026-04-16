@@ -46,7 +46,6 @@ actions:
       - iputils-ping
       - unzip
       - net-tools
-      - cockpit
 
   - action: overlay
     description: Put in local openwrt kernel
