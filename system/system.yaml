@@ -46,6 +46,7 @@ actions:
       - iputils-ping
       - unzip
       - net-tools
+      - fdisk
       - cockpit
 
   - action: overlay
