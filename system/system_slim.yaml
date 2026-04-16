@@ -74,6 +74,8 @@ actions:
       systemctl enable hostapd@wlan0
       systemctl enable hostapd@wlan1
       systemctl enable serial-getty@ttyS0.service
+      systemctl mask systemd-networkd-wait-online.service
+      systemctl mask NetworkManager-wait-online.service
 
   - action: run
     description: Create kernel module depends

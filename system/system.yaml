@@ -78,6 +78,7 @@ actions:
       systemctl mask systemd-network-generator.service
       systemctl mask systemd-random-seed.service
       systemctl mask systemd-networkd-wait-online.service
+      systemctl mask NetworkManager-wait-online.service
 
   - action: run
     description: Create kernel module depends
@@ -128,13 +129,15 @@ actions:
     chroot: true
     command: |
       echo 'root:{{ $passwd }}' | chpasswd
-      useradd -s /bin/bash admin
-      echo 'admin:admin' | chpasswd
-      usermod -aG sudo admin
       echo ThingsLink > /etc/hostname
       echo uninitialized > /etc/machine-id
       rm -f /etc/ssh/ssh_host_*
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+  - action: run
+    description: Setup system users
+    chroot: true
+    script: scripts/setup-user.sh
 
 # dd uboot to img
   - action: run
