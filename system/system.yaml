@@ -92,7 +92,6 @@ actions:
     description: Enable symlink services
     chroot: true
     command: |
-      systemctl daemon-reload
       systemctl add-wants multi-user.target symbridge.service 
       systemctl add-wants multi-user.target symrouter.service
       systemctl add-wants multi-user.target setup-tap-interfaces.service

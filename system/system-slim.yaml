@@ -88,7 +88,6 @@ actions:
     description: Enable symlink services
     chroot: true
     command: |
-      systemctl daemon-reload
       systemctl add-wants multi-user.target LDog.service
 
   - action: run
