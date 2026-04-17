@@ -1,0 +1,12 @@
+# -*- conf -*-
+
+[Unit]
+Description=symrouter
+Before=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/tincd -n symrouter
+
+[Install]
+WantedBy=multi-user.target

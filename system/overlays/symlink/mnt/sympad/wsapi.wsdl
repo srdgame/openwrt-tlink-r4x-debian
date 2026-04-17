@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="wsapi"
+  targetNamespace="urn:symlinkws"
+  xmlns:tns="urn:symlinkws"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:ns="urn:symlinkws"
+  xmlns:SOAP="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:HTTP="http://schemas.xmlsoap.org/wsdl/http/"
+  xmlns:MIME="http://schemas.xmlsoap.org/wsdl/mime/"
+  xmlns:DIME="http://schemas.xmlsoap.org/ws/2002/04/dime/wsdl/"
+  xmlns:WSDL="http://schemas.xmlsoap.org/wsdl/"
+  xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+<types>
+
+  <schema targetNamespace="urn:symlinkws"
+    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:ns="urn:symlinkws"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="unqualified"
+    attributeFormDefault="unqualified">
+    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </schema>
+
+</types>
+
+<message name="OnTestRequest">
+  <part name="sParam" type="xsd:string"/><!-- ns__OnTest::sParam -->
+</message>
+
+<message name="OnTestResponse">
+  <part name="sResult" type="xsd:string"/><!-- ns__OnTest::sResult -->
+</message>
+
+<message name="OnCommandRequest">
+  <part name="sParam" type="xsd:string"/><!-- ns__OnCommand::sParam -->
+</message>
+
+<message name="OnCommandResponse">
+  <part name="sResult" type="xsd:string"/><!-- ns__OnCommand::sResult -->
+</message>
+
+<message name="GetDbConfigRequest">
+</message>
+
+<message name="GetDbConfigResponse">
+  <part name="sDoc" type="xsd:string"/><!-- ns__GetDbConfig::sDoc -->
+</message>
+
+<message name="GetValueByObjectRequest">
+  <part name="lpNamePath" type="xsd:string"/><!-- ns__GetValueByObject::lpNamePath -->
+</message>
+
+<message name="GetValueByObjectResponse">
+  <part name="sDoc" type="xsd:string"/><!-- ns__GetValueByObject::sDoc -->
+</message>
+
+<message name="GetValueByTagRequest">
+  <part name="lpTagName" type="xsd:string"/><!-- ns__GetValueByTag::lpTagName -->
+</message>
+
+<message name="GetValueByTagResponse">
+  <part name="sDoc" type="xsd:string"/><!-- ns__GetValueByTag::sDoc -->
+</message>
+
+<message name="SetValueByTagRequest">
+  <part name="nSync" type="xsd:int"/><!-- ns__SetValueByTag::nSync -->
+  <part name="lpTagName" type="xsd:string"/><!-- ns__SetValueByTag::lpTagName -->
+  <part name="nVT" type="xsd:int"/><!-- ns__SetValueByTag::nVT -->
+  <part name="lpValue" type="xsd:string"/><!-- ns__SetValueByTag::lpValue -->
+</message>
+
+<message name="SetValueByTagResponse">
+  <part name="sDoc" type="xsd:string"/><!-- ns__SetValueByTag::sDoc -->
+</message>
+
+<portType name="wsapiPortType">
+  <operation name="OnTest">
+    <documentation>Service definition of function ns__OnTest</documentation>
+    <input message="tns:OnTestRequest"/>
+    <output message="tns:OnTestResponse"/>
+  </operation>
+  <operation name="OnCommand">
+    <documentation>Service definition of function ns__OnCommand</documentation>
+    <input message="tns:OnCommandRequest"/>
+    <output message="tns:OnCommandResponse"/>
+  </operation>
+  <operation name="GetDbConfig">
+    <documentation>Service definition of function ns__GetDbConfig</documentation>
+    <input message="tns:GetDbConfigRequest"/>
+    <output message="tns:GetDbConfigResponse"/>
+  </operation>
+  <operation name="GetValueByObject">
+    <documentation>Service definition of function ns__GetValueByObject</documentation>
+    <input message="tns:GetValueByObjectRequest"/>
+    <output message="tns:GetValueByObjectResponse"/>
+  </operation>
+  <operation name="GetValueByTag">
+    <documentation>Service definition of function ns__GetValueByTag</documentation>
+    <input message="tns:GetValueByTagRequest"/>
+    <output message="tns:GetValueByTagResponse"/>
+  </operation>
+  <operation name="SetValueByTag">
+    <documentation>Service definition of function ns__SetValueByTag</documentation>
+    <input message="tns:SetValueByTagRequest"/>
+    <output message="tns:SetValueByTagResponse"/>
+  </operation>
+</portType>
+
+<binding name="wsapi" type="tns:wsapiPortType">
+  <SOAP:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="OnTest">
+    <SOAP:operation style="rpc" soapAction=""/>
+    <input>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </input>
+    <output>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </output>
+  </operation>
+  <operation name="OnCommand">
+    <SOAP:operation style="rpc" soapAction=""/>
+    <input>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </input>
+    <output>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </output>
+  </operation>
+  <operation name="GetDbConfig">
+    <SOAP:operation style="rpc" soapAction=""/>
+    <input>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </input>
+    <output>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </output>
+  </operation>
+  <operation name="GetValueByObject">
+    <SOAP:operation style="rpc" soapAction=""/>
+    <input>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </input>
+    <output>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </output>
+  </operation>
+  <operation name="GetValueByTag">
+    <SOAP:operation style="rpc" soapAction=""/>
+    <input>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </input>
+    <output>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </output>
+  </operation>
+  <operation name="SetValueByTag">
+    <SOAP:operation style="rpc" soapAction=""/>
+    <input>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </input>
+    <output>
+          <SOAP:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:symlinkws"/>
+    </output>
+  </operation>
+</binding>
+
+<service name="wsapi">
+  <documentation>gSOAP 2.8.55 generated service definition</documentation>
+  <port name="wsapi" binding="tns:wsapi">
+    <SOAP:address location="http://localhost:80"/>
+  </port>
+</service>
+
+</definitions>

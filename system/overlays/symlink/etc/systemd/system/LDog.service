@@ -1,0 +1,13 @@
+[Unit]
+Description=LDog
+
+[Service]
+Type=simple
+ExecStartPre=/bin/sleep 5
+ExecStart=/mnt/sympad/LDog.ex
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target

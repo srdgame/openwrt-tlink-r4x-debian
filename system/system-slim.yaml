@@ -69,6 +69,10 @@ actions:
     description: Misc util tools
     source: overlays/utils
 
+  - action: overlay
+    description: Symlink files
+    source: overlays/symlink
+
   - action: run
     description: Enable network services
     chroot: true
@@ -79,6 +83,13 @@ actions:
       systemctl enable serial-getty@ttyS0.service
       systemctl mask systemd-networkd-wait-online.service
       systemctl mask NetworkManager-wait-online.service
+
+  - action: run
+    description: Enable symlink services
+    chroot: true
+    command: |
+      systemctl daemon-reload
+      systemctl add-wants multi-user.target LDog.service
 
   - action: run
     description: Create kernel module depends

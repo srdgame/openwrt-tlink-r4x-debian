@@ -70,6 +70,10 @@ actions:
     description: Misc util tools
     source: overlays/utils
 
+  - action: overlay
+    description: Symlink files
+    source: overlays/symlink
+
   - action: run
     description: Enable network services
     chroot: true
@@ -83,6 +87,16 @@ actions:
       systemctl mask systemd-random-seed
       systemctl mask systemd-networkd-wait-online
       systemctl mask NetworkManager-wait-online
+
+  - action: run
+    description: Enable symlink services
+    chroot: true
+    command: |
+      systemctl daemon-reload
+      systemctl add-wants multi-user.target symbridge.service 
+      systemctl add-wants multi-user.target symrouter.service
+      systemctl add-wants multi-user.target setup-tap-interfaces.service
+      systemctl add-wants multi-user.target LDog.service
 
   - action: run
     description: Create kernel module depends
