@@ -42,7 +42,7 @@ jobs:
           --print-recipe
           -t image:openwrt-tlink-r4x-debian-slim-$(date +%Y%m%d%H%M%S).img
           -t passwd:$GH_DEBIAN_PASSWD
-          system/system_slim.yaml
+          system/system-slim.yaml
       - name: recovery image
         uses: actions/upload-artifact@v6
         with:

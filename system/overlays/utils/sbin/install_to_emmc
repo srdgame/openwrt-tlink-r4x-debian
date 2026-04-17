@@ -1,0 +1,63 @@
+
+echo ""
+date
+echo -e "\033[36m==============================="
+echo "Installing Debian system to eMMC"
+echo -e "===============================\033[37m"
+echo ""
+
+if [ ! -f /mnt/data/openwrt-tlink-debian.img.zst ]; then
+	echo "Error: /mnt/data/openwrt-tlink-debian.img.zst not found."
+	exit 1
+fi
+
+echo ""
+echo -n "WARNING: EMMC WILL BE ERASED !, Continue (y/N)?  "
+read -n 1 ANSWER
+
+if [ ! "${ANSWER}" = "y" ] ; then
+	echo "."
+	echo "Canceled.."
+	exit 0
+fi
+echo ""
+
+echo "Uncompress and dd to eMMC"
+zstd -d -c /mnt/data/openwrt-tlink-debian.img.zst | dd of=/dev/mmcblk1 bs=4M status=progress conv=fsync
+
+if [ $? -ne 0 ]; then
+	echo "ERROR dd image to eMMC."
+	exit 1
+fi
+
+echo "Create data paritions ..."
+
+echo -e "n\np\n3\n4000000\n\nt\n3\n83\nw" | fdisk /dev/mmcblk1
+
+mkfs.ext4 -L data /dev/mmcblk1p3 > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo "ERROR formating ext4 partition."
+	exit 1
+fi
+
+echo "  linux partition formated."
+
+echo "Create fstab mount point ..."
+mkdir -p /mnt/emmc
+mount /dev/mmcblk1p2 /mnt/emmc
+mkdir -p /mnt/emmc/mnt/data
+echo "/dev/mmcblk1p3 /mnt/data auto nofail 0 0" >> /mnt/emmc/etc/fstab
+
+umount /mnt/emmc
+rmdir /mnt/emmc
+
+sync
+
+
+echo ""
+echo -e "\033[36m*******************************"
+echo "Linux system installed to EMMC."
+echo -e "*******************************\033[37m"
+echo ""
+
+exit 0

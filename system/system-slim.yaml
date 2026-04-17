@@ -65,6 +65,10 @@ actions:
     description: Misc configuration
     source: overlays/config
 
+  - action: overlay
+    description: Misc util tools
+    source: overlays/utils
+
   - action: run
     description: Enable network services
     chroot: true
