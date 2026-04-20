@@ -33,6 +33,7 @@ actions:
     update: false
     recommends: true
     packages:
+      - bsdextrautils
       - hostapd
       - wireless-regdb
       - iw

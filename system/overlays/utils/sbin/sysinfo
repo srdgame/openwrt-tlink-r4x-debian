@@ -1,0 +1,242 @@
+#! /bin/bash
+
+target=""
+
+if [ -f /etc/build_version ]; then
+    fm_version=$(cat /etc/build_version)
+else
+    fm_version=0.00
+fi
+
+show_help(){
+    cat <<EOF
+sysinfo  [-h] <sw|psn|temp|hw|module|mac|all>
+
+    -h          This help information
+    sw          Software information
+    hw          Hardware information
+    temp        CPU temperature
+    frq         CPU frequency
+    psn         Product serial number
+    module      The 2G or 4G module
+    mac         The current MAC addresses
+    all         All
+EOF
+}
+
+parse_cmdline(){
+    while getopts h  opt
+    do
+        case $opt in
+            h)
+                show_help
+                exit 0
+                ;;
+        esac
+    done
+
+    shift $(($OPTIND - 1))
+
+    if [ $# -eq 0 ]; then
+        target="all"
+    else
+        case $1 in
+            sw | \
+            hw | \
+            temp | \
+            frq | \
+            module | \
+            mac | \
+            psn | \
+            sn | \
+            all)
+                target=$1
+                ;;
+            *)
+                show_help
+                exit 1
+                ;;
+        esac
+    fi
+}
+
+do_product_sn_kooiot_emmc() {
+	mmc_disk="/dev/mmcblk1"
+	if [ -b "$mmc_disk" -o -f "$mmc_disk" ]; then
+
+		product_sn=$(dd if=/dev/mmcblk1 \
+			bs=1 count=20 skip=410112 2>/dev/null | \
+			hexdump -v -e '/1 "%c"' 2>/dev/null)
+		product_sn_dp=$(dd if=/dev/mmcblk1 \
+			bs=1 count=20 skip=410132 2>/dev/null | \
+			hexdump -v -e '/1 "%c"' 2>/dev/null)
+
+		mkdir -p /tmp/sysinfo
+
+		if [ "${product_sn}"x = "${product_sn_dp}"x ]; then
+			[ -e /tmp/sysinfo/product_sn ] || \
+				echo ${product_sn} > /tmp/sysinfo/product_sn
+		else
+			[ -e /tmp/sysinfo/product_sn ] || \
+				echo "UNKNOWN" > /tmp/sysinfo/product_sn
+		fi
+	fi
+}
+
+product_sn(){
+	if [ -f /tmp/sysinfo/product_sn ] ; then
+		cat /tmp/sysinfo/product_sn
+	else
+		do_product_sn_kooiot_emmc
+		cat /tmp/sysinfo/product_sn
+	fi
+}
+
+show_software_info(){ # software info
+    local os_distrib="unknown"
+    local kernel_version=$(uname -a)
+
+    if [ -r /etc/os_release ]; then
+        os_distrib=$(sed -nE "s/^DEBIAN_VERSION_FULL='([^']+)'.*/\1/p" /etc/os_release 2> /dev/null)
+    fi
+
+    cat <<EOF
+Software information:
+  Firmware Version:  $fm_version
+  Kernel Version:    ${kernel_version}
+  Debian Version:   ${os_distrib}
+
+EOF
+}
+
+show_thermal_info(){
+    local readonly cpu_thermal_zone=/sys/class/thermal/thermal_zone0
+
+    cat <<EOF
+CPU temperature( °C X 1000 ):
+  current:	$(cat ${cpu_thermal_zone}/temp)
+
+EOF
+}
+
+show_cpu_frq_info(){
+    local readonly cpu_freq_policy0=/sys/devices/system/cpu/cpufreq/policy0/
+
+    cat <<EOF
+CPU frequency(Hz):
+  Current:  $(cat ${cpu_freq_policy0}/cpuinfo_cur_freq)
+  Min:      $(cat ${cpu_freq_policy0}/cpuinfo_min_freq)
+  Max:      $(cat ${cpu_freq_policy0}/cpuinfo_max_freq)
+
+EOF
+}
+
+show_hardware_info(){
+    local readonly sysfs_dir_cpuinfo="/sys/firmware/devicetree/base/cpus/cpu@0/compatible"
+    local readonly sysfs_emmc_serial="/sys/class/block/mmcblk1/device/serial"
+
+    cat <<EOF
+Hardware information:
+  Board:        ThingsLink-R4x
+  SN:           $(product_sn)
+  PSN:          $(product_sn)
+  Modle:        tlink-r4x
+  CPU Type:     $(cat ${sysfs_dir_cpuinfo})
+  eMMC Serial:  $(cat ${sysfs_emmc_serial} 2>/dev/null)
+EOF
+
+    for i in /sys/class/net/end*;
+    do
+        if [ -f ${i}/address ]; then
+            echo "  MAC eth${i##/sys/class/net/end}:     $(cat ${i}/address)"
+        fi
+    done    
+    echo ""
+}
+
+show_psn_info(){
+    cat <<EOF
+  PSN:          $(product_sn)
+EOF
+}
+
+show_sn_info(){
+    cat <<EOF
+  SN:           $(product_sn)
+EOF
+}
+
+show_module_info(){
+    local module_type="UNKNOWN"
+    local module_model="UNKNOWN"
+    local module_imei="UNKNOWN"
+
+	if [ -f "/tmp/sysinfo/3ginfo" ]; then
+		# module_type="4G"
+		module_type=$(3ginfo_get 'mode')
+		module_model=$(3ginfo_get 'device')
+		module_sim=$(3ginfo_get 'ccid')
+		module_imei=$(3ginfo_get 'cgsn')
+	fi
+
+    cat <<EOF
+2G/4G module info:
+  Type:     ${module_type}
+  Modle:    ${module_model}
+  SIM:      ${module_sim}
+  IMEI:     ${module_imei}
+
+EOF
+}
+
+show_netdev_mac(){
+    for i in /sys/class/net/end*;
+    do
+        if [ -f ${i}/address ]; then
+            echo "MAC eth${i##/sys/class/net/end}:    $(cat ${i}/address)"
+        fi
+    done
+	echo ""
+}
+
+show_sysinfo(){
+    local tgt=$1
+
+    case $tgt in
+        "sw")
+            show_software_info
+            ;;
+        "temp")
+            show_thermal_info
+            ;;
+        "frq")
+            show_cpu_frq_info
+            ;;
+        "hw")
+            show_hardware_info
+            ;;
+        "module")
+            show_module_info
+            ;;
+        "mac")
+            show_netdev_mac
+            ;;
+        "psn")
+            show_psn_info
+            ;;
+        "sn")
+            show_sn_info
+            ;;
+        "all")
+            show_software_info
+            show_hardware_info
+            show_module_info
+            show_thermal_info
+            show_cpu_frq_info
+            ;;
+    esac
+}
+
+parse_cmdline  $@
+show_sysinfo   $target
+

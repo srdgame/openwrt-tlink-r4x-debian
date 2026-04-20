@@ -1,0 +1,104 @@
+#!/bin/bash
+
+export FORCE=0
+export OFFSET=0
+export HELP=0
+
+# parse options
+while [ -n "$1" ]; do
+	case "$1" in
+		-o) export OFFSET="$2"; shift;;
+		-f|--force) export FORCE=1;;
+		-h|--help) export HELP=1;;
+		-*)
+			echo "Invalid option: $1" >&2
+			exit 1
+		;;
+		*) break;;
+	esac
+	shift;
+done
+
+PSN="$1"
+if [ -z "${PSN}" ]; then
+	export HELP=1
+fi
+
+if [ $HELP -ne 0 ]; then
+    cat <<EOF
+Usage:	${0} [<write-option>...] <mac_base>
+
+write-option:
+	-o <offset>   Offset for writing mac
+	-f | --force  Force write without confirmation
+	-h | --help   Show help
+EOF
+	exit 1
+fi
+
+if [ ${#PSN} -ne 20 ]; then
+	echo "Product Serial Number must be 20 characters!"
+	exit 2
+fi
+
+echo "PSN: ${PSN}"
+
+if [ ${FORCE} -eq 0 ]; then
+	#----------------------------------------------------------
+	echo ""
+	echo -n "WARNING: PRODUCT SERIAL NUMBER REPLACED !, Continue (y/N)?  "
+	read -n 1 ANSWER
+
+	if [ ! "${ANSWER}" = "y" ] ; then
+		echo "."
+		echo "Canceled.."
+		exit 0
+	fi
+	echo ""
+	#----------------------------------------------------------
+fi
+
+NVMEM_PATH="/sys/bus/i2c/devices/0-0050/eeprom"
+if [ ! -f ${NVMEM_PATH} ]; then
+	NVMEM_PATH="/sys/bus/i2c/devices/0-0050/0-00501/nvmem"
+fi
+
+if [ ! -f ${NVMEM_PATH} ]; then
+    echo "EEPROM not found! Product SN will be writen to EMMC!!!"
+
+	echo ${PSN} | dd of=/dev/mmcblk1 count=20 bs=1 seek=410112
+	echo ${PSN} | dd of=/dev/mmcblk1 count=20 bs=1 seek=410132
+
+	product_sn=$(dd if=/dev/mmcblk1 \
+		bs=1 count=20 skip=410112 2>/dev/null | \
+		hexdump -v -e '/1 "%c"' 2>/dev/null)
+
+	product_sn_dp=$(dd if=/dev/mmcblk1 \
+		bs=1 count=20 skip=410132 2>/dev/null | \
+		hexdump -v -e '/1 "%c"' 2>/dev/null)
+else
+	echo ${PSN} | dd of=${NVMEM_PATH} count=20 bs=1 seek=0
+	echo ${PSN} | dd of=${NVMEM_PATH} count=20 bs=1 seek=20
+
+	product_sn=$(dd if=${NVMEM_PATH} \
+		bs=1 count=20 skip=0 2>/dev/null | \
+		hexdump -v -e '/1 "%c"' 2>/dev/null)
+
+	product_sn_dp=$(dd if=${NVMEM_PATH} \
+		bs=1 count=20 skip=20 2>/dev/null | \
+		hexdump -v -e '/1 "%c"' 2>/dev/null)
+fi
+
+if [ "${product_sn}"x = "${product_sn_dp}"x ]; then
+	echo "${product_sn}" > /tmp/sysinfo/product_sn
+	echo "Loaded PSN: ${product_sn}"
+
+	echo "Done!"
+
+	exit 0
+else
+	echo "Write failed!!!!"
+	exit 1
+fi
+
+exit 99
