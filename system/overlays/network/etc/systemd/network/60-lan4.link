@@ -3,6 +3,7 @@ Property=OF_ALIAS_0=ethernet3
 
 [Link]
 AlternativeName=lan4
-NamePolicy=keep kernel database onboard slot path
-AlternativeNamesPolicy=database onboard slot path
+Name=eth3
+# NamePolicy=keep kernel database onboard slot path
+# AlternativeNamesPolicy=database onboard slot path
 MACAddressPolicy=persistent

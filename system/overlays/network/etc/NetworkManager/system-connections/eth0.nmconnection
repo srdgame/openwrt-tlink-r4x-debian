@@ -1,9 +1,9 @@
 [connection]
-id=end0
+id=eth0
 uuid=f6a7eed3-4523-4446-b287-2a462af45767
 type=ethernet
 controller=br-lan
-interface-name=end0
+interface-name=eth0
 port-type=bridge
 timestamp=1776158923
 
