@@ -1,5 +1,6 @@
 [Unit]
-Description=LDog
+Description=SymLink - IOT Gateway Application
+After=network.target
 
 [Service]
 Type=simple
