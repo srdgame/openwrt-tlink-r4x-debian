@@ -24,6 +24,8 @@ actions:
     recommends: true
     packages:
       - systemd
+      - systemd-repart
+      - systemd-resolved
       - systemd-sysv
       - systemd-timesyncd
       - udev
