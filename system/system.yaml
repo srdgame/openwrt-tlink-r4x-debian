@@ -73,6 +73,10 @@ actions:
     source: overlays/utils
 
   - action: overlay
+    description: Tinc files
+    source: overlays/tinc
+
+  - action: overlay
     description: Symlink files
     source: overlays/symlink
 

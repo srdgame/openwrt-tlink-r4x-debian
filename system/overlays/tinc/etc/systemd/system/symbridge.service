@@ -1,13 +1,14 @@
 # -*- conf -*-
 
 [Unit]
-Description=symbridge
+Description=SymLink Netowrk Bridge service
 After=network-pre.target
-Before=network.target
 
 [Service]
 Type=forking
 ExecStart=/usr/sbin/tincd -n symbridge
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
