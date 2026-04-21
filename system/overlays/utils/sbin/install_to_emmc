@@ -46,7 +46,7 @@ echo "Create fstab mount point ..."
 mkdir -p /mnt/emmc
 mount /dev/mmcblk1p2 /mnt/emmc
 mkdir -p /mnt/emmc/mnt/data
-echo "/dev/mmcblk1p3 /mnt/data auto nofail 0 0" >> /mnt/emmc/etc/fstab
+echo "/dev/mmcblk1p3 /mnt/data auto defaults 0 0" >> /mnt/emmc/etc/fstab
 
 umount /mnt/emmc
 rmdir /mnt/emmc
