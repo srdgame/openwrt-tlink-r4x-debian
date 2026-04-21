@@ -2,6 +2,7 @@
 
 [Unit]
 Description=symbridge
+After=network-pre.target
 Before=network.target
 
 [Service]
