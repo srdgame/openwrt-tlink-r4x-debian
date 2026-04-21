@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -e /run/systemd/container ]; then
+    exit 0
+fi
+
+if [ -e /dev/rtc ]; then
+	hwclock --rtc=/dev/rtc --hctosys
+fi
