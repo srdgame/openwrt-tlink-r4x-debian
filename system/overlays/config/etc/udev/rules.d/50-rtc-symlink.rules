@@ -1,0 +1,2 @@
+# 让 /dev/rtc 符号链接指向 rtc1
+SUBSYSTEM=="rtc", KERNEL=="rtc1", SYMLINK+="rtc", OPTIONS+="link_priority=100"

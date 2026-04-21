@@ -37,6 +37,7 @@ actions:
     packages:
       - bsdextrautils
       - e2fsprogs
+      - util-linux-extra
       - hostapd
       - wireless-regdb
       - iw

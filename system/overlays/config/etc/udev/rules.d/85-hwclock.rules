@@ -1,0 +1,6 @@
+# /usr/lib/udev/rules.d/85-hwclock.rules
+# 
+# This rule is used to trigger system time synchronization from the hardware
+# clock when the rtc device is added.
+
+KERNEL=="rtc1", SUBSYSTEM=="rtc", ACTION=="add", RUN+="/lib/udev/hwclock-set"
