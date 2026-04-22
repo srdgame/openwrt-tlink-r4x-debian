@@ -97,7 +97,7 @@ show_software_info(){ # software info
     local kernel_version=$(uname -a)
 
     if [ -r /etc/os_release ]; then
-        os_distrib=$(sed -nE "s/^DEBIAN_VERSION_FULL='([^']+)'.*/\1/p" /etc/os_release 2> /dev/null)
+		os_distrib=$(sed -n 's/^DEBIAN_VERSION_FULL=\(.*\)/\1/p' /etc/os-release 2> /dev/null)
     fi
 
     cat <<EOF
