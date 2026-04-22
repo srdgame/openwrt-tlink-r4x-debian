@@ -1,2 +1,0 @@
-# 禁用/dev/rtc0
-SUBSYSTEM=="rtc", KERNEL=="rtc0", MODE="000"
