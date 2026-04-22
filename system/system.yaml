@@ -157,6 +157,7 @@ actions:
       echo uninitialized > /etc/machine-id
       rm -f /etc/ssh/ssh_host_*
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+      date "+%g.%m.%d" > /etc/build_version
 
   - action: run
     description: Setup system users
