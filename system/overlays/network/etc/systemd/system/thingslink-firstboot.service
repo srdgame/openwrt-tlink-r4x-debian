@@ -9,4 +9,4 @@ RemainAfterExit=yes
 ExecStartPost=touch /etc/thingslink-firstboot-executed
 
 [Install]
-WantedBy=network-pre.target
+WantedBy=sysinit.target
