@@ -135,6 +135,11 @@ actions:
   - action: filesystem-deploy
     append-kernel-cmdline: "{{ $cmdline }}"
 
+  - action: run
+    description: Setup system users
+    chroot: true
+    script: scripts/setup-user.sh
+
 # This needs to run last as apt gets unhappy without machine-id
   - action: run
     description: Setup system for first boot
@@ -146,11 +151,6 @@ actions:
       rm -f /etc/ssh/ssh_host_*
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
       date "+%g.%m.%d" > /etc/build_version
-
-  - action: run
-    description: Setup system users
-    chroot: true
-    script: scripts/setup-user.sh
 
 # dd uboot to img
   - action: run
