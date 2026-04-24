@@ -95,3 +95,10 @@ tlink_gen_mac() {
 echo "Hello, this is the first boot!" > /tmp/firstboot.log
 
 tlink_gen_mac
+
+if ! grep -q "^[^#]*/dev/mmcblk1p3" /etc/fstab; then
+    echo "/dev/mmcblk1p3 /mnt/data auto defaults 0 0" >> /etc/fstab
+    echo "Added mount point for /mnt/data"
+else
+    echo "Mount point for /mnt/data already exists!"
+fi
