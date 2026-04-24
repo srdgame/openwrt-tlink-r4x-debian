@@ -8,6 +8,5 @@ port-type=bridge
 timestamp=1776158923
 
 [ethernet]
-mac-address=FA:EB:E0:4E:BA:9C
 
 [bridge-port]

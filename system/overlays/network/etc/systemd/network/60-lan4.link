@@ -6,4 +6,6 @@ AlternativeName=lan4
 Name=eth3
 # NamePolicy=keep kernel database onboard slot path
 # AlternativeNamesPolicy=database onboard slot path
-MACAddressPolicy=persistent
+# MACAddressPolicy=persistent
+MACAddressPolicy=none
+MACAddress=00:11:22:33:44:53

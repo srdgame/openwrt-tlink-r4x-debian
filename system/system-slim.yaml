@@ -89,15 +89,15 @@ actions:
       systemctl enable systemd-networkd
       systemctl enable systemd-timesyncd
       systemctl enable hostapd@wlan0
-      systemctl enable serial-getty@ttyS0.service
-      systemctl mask systemd-networkd-wait-online.service
-      systemctl mask NetworkManager-wait-online.service
+      systemctl enable serial-getty@ttyS0
+      systemctl mask systemd-networkd-wait-online
 
   - action: run
     description: Enable symlink services
     chroot: true
     command: |
-      systemctl add-wants multi-user.target LDog.service
+      systemctl enable thingslink-firstboot
+      systemctl enable LDog
 
   - action: run
     description: Create kernel module depends
@@ -135,6 +135,11 @@ actions:
   - action: filesystem-deploy
     append-kernel-cmdline: "{{ $cmdline }}"
 
+  - action: run
+    description: Setup system users
+    chroot: true
+    script: scripts/setup-user.sh
+
 # This needs to run last as apt gets unhappy without machine-id
   - action: run
     description: Setup system for first boot
@@ -146,11 +151,6 @@ actions:
       rm -f /etc/ssh/ssh_host_*
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
       date "+%g.%m.%d" > /etc/build_version
-
-  - action: run
-    description: Setup system users
-    chroot: true
-    script: scripts/setup-user.sh
 
 # dd uboot to img
   - action: run

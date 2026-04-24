@@ -1,0 +1,12 @@
+[Unit]
+Description=ThingsLink First Boot Script
+ConditionPathExists=!/etc/thingslink-firstboot-executed
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/thingslink_firstboot.sh
+RemainAfterExit=yes
+ExecStartPost=touch /etc/thingslink-firstboot-executed
+
+[Install]
+WantedBy=multi-user.target
