@@ -47,7 +47,7 @@ macaddr_setbit_la() {
 	macaddr_setbit $1 7
 }
 
-caddr_unsetbit_mc() {
+macaddr_unsetbit_mc() {
 	local mac=$1
 
 	printf "%02x:%s" $((0x${mac%%:*} & ~0x01)) ${mac#*:}
