@@ -118,14 +118,18 @@ tlink_create_mnt_data() {
 	mount /dev/mmcblk1p3 /mnt/data
 }
 
+tlink_create_mnt_data_mount() {
+	tlink_create_mnt_data
+	if ! grep -q "^[^#]*/dev/mmcblk1p3" /etc/fstab; then
+		echo "/dev/mmcblk1p3 /mnt/data auto defaults 0 0" >> /etc/fstab
+		echo "Added mount point for /mnt/data"
+	else
+		echo "Mount point for /mnt/data already exists!"
+	fi
+	ln -s /mnt/data /mmc
+}
+
 echo "Hello, this is the first boot!" > /tmp/firstboot.log
 
 tlink_gen_mac
-
-tlink_create_mnt_data
-if ! grep -q "^[^#]*/dev/mmcblk1p3" /etc/fstab; then
-    echo "/dev/mmcblk1p3 /mnt/data auto defaults 0 0" >> /etc/fstab
-    echo "Added mount point for /mnt/data"
-else
-    echo "Mount point for /mnt/data already exists!"
-fi
+tlink_create_mnt_data_mount
