@@ -1,0 +1,59 @@
+#!/bin/sh
+
+echo ""
+date
+echo -e "\033[36m==============================="
+echo "Installing Debian system to eMMC"
+echo -e "===============================\033[37m"
+echo ""
+
+if [ ! -f /tmp/openwrt-tlink-debian.img.gz ]; then
+	echo "Error: /tmp/openwrt-tlink-debian.img.gz not found."
+	exit 1
+fi
+
+if [ ! -e /dev/mmcblk1 ]; then
+	echo "Error: /dev/mmcblk1 not found."
+	exit 1
+fi
+
+echo "Uncompress and dd to eMMC"
+zcat /tmp/openwrt-tlink-debian.img.gz | dd of=/dev/mmcblk1 bs=4M conv=fsync > /dev/kmsg 2>&1
+
+sync
+
+if [ $? -ne 0 ]; then
+	echo "ERROR dd image to eMMC."
+	exit 1
+fi
+
+# if we create partition here will cause system partition failed to mount after reboot
+#
+# echo "Create data paritions ..."
+
+# echo -e "n\np\n3\n4000000\n\nt\n3\n83\nw" | fdisk /dev/mmcblk1 > /dev/null 2>&1
+
+#if [ $? -ne 0 ]; then
+#	echo "ERROR  create partitiont."
+#	exit 1
+#fi
+
+#mkfs.ext4 -L data /dev/mmcblk1p3 > /dev/null 2>&1
+#if [ $? -ne 0 ]; then
+#	echo "ERROR formating ext4 partition."
+#	exit 1
+#fi
+
+#echo "  linux partition formated."
+
+echo ""
+echo -e "\033[36m*******************************"
+echo "Linux system installed to EMMC."
+echo -e "*******************************\033[37m"
+echo ""
+
+sync
+
+sleep 10
+
+exit 0

@@ -92,6 +92,37 @@ tlink_gen_mac() {
 	sed -i "s/^MACAddress=.*/MACAddress=$(macaddr_add "$lan_mac" 3)/" /etc/systemd/network/60-lan4.link
 }
 
+tlink_create_mnt_data() {
+	if [ -e /dev/mmcblk1p3 ]; then
+		return
+	fi
+	echo "Create data partition..." >> /tmp/firstboot.log
+	echo "Create data partition..."
+
+	echo -e "n\np\n3\n4000000\n\nt\n3\n83\nw" | fdisk /dev/mmcblk1 > /dev/null 2>&1
+
+	if [ $? -ne 0 ]; then
+		echo "ERROR  create partitiont."
+		exit 1
+	fi
+
+	mkfs.ext4 -L data /dev/mmcblk1p3 > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		echo "ERROR formating ext4 partition."
+		exit 1
+	fi
+
+	echo "  linux partition formated."
+}
+
 echo "Hello, this is the first boot!" > /tmp/firstboot.log
 
 tlink_gen_mac
+
+tlink_create_mnt_data
+if ! grep -q "^[^#]*/dev/mmcblk1p3" /etc/fstab; then
+    echo "/dev/mmcblk1p3 /mnt/data auto defaults 0 0" >> /etc/fstab
+    echo "Added mount point for /mnt/data"
+else
+    echo "Mount point for /mnt/data already exists!"
+fi
