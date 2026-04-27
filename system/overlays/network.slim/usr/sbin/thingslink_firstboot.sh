@@ -113,6 +113,9 @@ tlink_create_mnt_data() {
 	fi
 
 	echo "  linux partition formated."
+
+	mkdir -p /mnt/data
+	mount /dev/mmcblk1p3 /mnt/data
 }
 
 echo "Hello, this is the first boot!" > /tmp/firstboot.log
