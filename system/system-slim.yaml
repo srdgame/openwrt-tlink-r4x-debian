@@ -103,7 +103,7 @@ actions:
     description: Create kernel module depends
     chroot: true
     command: |
-      depmod 6.6.129
+      depmod 6.6.133
 
   - action: image-partition
     imagename: {{ $image }}
