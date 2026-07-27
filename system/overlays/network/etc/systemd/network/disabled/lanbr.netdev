@@ -1,7 +1,0 @@
-[NetDev]
-Name=lanbr
-Kind=bridge
-
-[Bridge]
-STP=false
-ForwardDelaySec=0

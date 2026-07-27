@@ -162,19 +162,19 @@ sleep 6
 
 echo 3 > /proc/sys/vm/drop_caches
 
-echo "Do pre upgrade" > /dev/console
+echo "Do pre upgrade" > /dev/kmsg
 
 if [ -n "$IMAGE" ] && type 'platform_pre_upgrade' >/dev/null 2>/dev/null; then
 	platform_pre_upgrade "$IMAGE"
 fi
 
-echo "Do switch to ramdisk" > /dev/console
+echo "Do switch to ramdisk" > /dev/kmsg
 if [ -n "$(rootfs_type)" ]; then
 	v "Switching to ramdisk..."
 	switch_to_ramfs
 fi
 
-echo "Before run command" > /dev/console
+echo "Before run command" > /dev/kmsg
 
 # Exec new shell from ramfs
 exec /bin/busybox ash -c "$COMMAND"

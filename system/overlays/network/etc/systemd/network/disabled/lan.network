@@ -1,8 +1,0 @@
-[Match]
-Name=lan
-
-[Network]
-Bridge=lanbr
-LLDP=true
-EmitLLDP=true
-EmitLLDP=nearest-bridge
