@@ -25,6 +25,7 @@ actions:
     packages:
       - systemd
       - systemd-repart
+      - networkd-dispatcher
       - systemd-resolved
       - systemd-sysv
       - systemd-timesyncd
@@ -149,6 +150,7 @@ actions:
     command: |
       echo 'root:{{ $passwd }}' | chpasswd
       echo ThingsLink > /etc/hostname
+      sudo sed -i 's/localhost/localhost ThingsLink/g' /etc/hosts
       echo uninitialized > /etc/machine-id
       rm -f /etc/ssh/ssh_host_*
       sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
