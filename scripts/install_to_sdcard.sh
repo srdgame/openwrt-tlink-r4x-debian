@@ -57,7 +57,7 @@ echo "  linux partition formated."
 echo "Copy system image to data parition"
 mkdir -p ./data
 sudo mount /dev/${SD_DEV}3 ./data
-sudo cp openwrt-tlink-${S_TYP}-debian-202*.img.zst ./data/openwrt-tlink-debian.img.zst
+sudo cp openwrt-tlink-${S_TYP}-debian-slim-202*.img.zst ./data/openwrt-tlink-debian.img.zst
 tree ./data/
 sync
 sudo umount ./data
