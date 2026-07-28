@@ -96,6 +96,9 @@ actions:
     chroot: true
     command: |
       systemctl enable thingslink-firstboot
+      systemctl enable symbridge
+      systemctl enable symrouter
+      systemctl enable setup-tap-interfaces
       systemctl enable LDog
 
   - action: run

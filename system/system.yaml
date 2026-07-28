@@ -24,6 +24,8 @@ actions:
     recommends: true
     packages:
       - systemd
+      - systemd-repart
+      - systemd-resolved
       - systemd-sysv
       - systemd-timesyncd
       - udev
@@ -85,22 +87,17 @@ actions:
     description: Enable network services
     chroot: true
     command: |
+      systemctl enable systemd-networkd
       systemctl enable systemd-timesyncd
       systemctl enable hostapd@wlan0
       systemctl enable serial-getty@ttyS0
-      systemctl mask systemd-networkd
-      systemctl mask systemd-networkd.socket
-      systemctl mask systemd-network-generator
-      systemctl mask systemd-random-seed
-      systemctl mask systemd-networkd-wait-online
-      systemctl mask NetworkManager-wait-online
 
   - action: run
     description: Enable symlink services
     chroot: true
     command: |
       systemctl enable thingslink-firstboot
-      systemctl enable symbridge 
+      systemctl enable symbridge
       systemctl enable symrouter
       systemctl enable setup-tap-interfaces
       systemctl enable LDog
