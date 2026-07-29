@@ -33,7 +33,8 @@ echo "/dev/mmcblk0p3 /mnt/data auto defaults 0 0" | sudo tee -a ./emmc/etc/fstab
 sync
 sudo umount ./emmc
 if [ $? -ne 0 ]; then
-	sleep 5
+	echo $?
+	sync
 	sudo umount ./emmc
 fi
 rmdir ./emmc
