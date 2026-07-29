@@ -51,6 +51,7 @@ actions:
       - iptables
       - iputils-ping
       - unzip
+      - ifupdown
       - net-tools
       - fdisk
 
