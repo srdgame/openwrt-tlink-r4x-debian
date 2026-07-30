@@ -52,6 +52,7 @@ actions:
       - unzip
       - net-tools
       - fdisk
+      - haveged
       - cockpit
 
   - action: overlay
@@ -87,7 +88,7 @@ actions:
     description: Enable network services
     chroot: true
     command: |
-      systemctl enable systemd-networkd
+      systemctl enable haveged
       systemctl enable systemd-timesyncd
       systemctl enable hostapd@wlan0
       systemctl enable serial-getty@ttyS0

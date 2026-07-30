@@ -1,13 +1,16 @@
 # !/bin/bash
 # 安装生成的system镜像文件到sd card上
+DEFAULT_IMG_TYP="full" 
 
 SD_DEV=$1
+IMG_TYP=${2:-$DEFAULT_IMG_TYP}
+
 S_TYP="r4x"
 
 echo ""
 date
 echo -e "\033[36m==============================="
-echo "Install slim system image to sd-card ${SD_DEV}"
+echo "Install ${IMG_TYP} system image to sd-card ${SD_DEV}"
 echo -e "===============================\033[37m"
 echo ""
 
@@ -16,12 +19,17 @@ if [ ! -e ${SD_DEV} ]; then
 	exit 1
 fi
 
-echo "Install system-slim image to SD Card"
-#echo "zstd -d -c openwrt-tlink-${S_TYP}-debian-slim-202*.img.zst | sudo dd of=${SD_DEV} bs=4M conv=fsync"
-zstd -d -c openwrt-tlink-${S_TYP}-debian-slim-202*.img.zst | sudo dd of=${SD_DEV} bs=4M conv=fsync
+IMG_NAME="-${IMG_TYP}"
+if [ "$IMG_TYP" == "full" ]; then
+	IMG_NAME=""
+fi
+
+echo "Install system-${IMG_TYP} image to SD Card"
+#echo "zstd -d -c openwrt-tlink-${S_TYP}-debian${IMG_NAME}-202*.img.zst | sudo dd of=${SD_DEV} bs=4M conv=fsync"
+zstd -d -c openwrt-tlink-${S_TYP}-debian${IMG_NAME}-202*.img.zst | sudo dd of=${SD_DEV} bs=4M conv=fsync
 
 if [ $? -ne 0 ]; then
-	echo "ERROR install slim image to sdcard."
+	echo "ERROR install ${IMG_TYP} image to sdcard."
 	exit 1
 fi
 
@@ -58,7 +66,7 @@ echo "  linux partition formated."
 echo "Copy system image to data parition"
 mkdir -p ./data
 sudo mount ${SD_DEV}3 ./data
-sudo cp openwrt-tlink-${S_TYP}-debian-slim-202*.img.zst ./data/openwrt-tlink-debian.img.zst
+sudo cp openwrt-tlink-${S_TYP}-debian${IMG_NAME}-202*.img.zst ./data/openwrt-tlink-debian.img.zst
 tree ./data/
 sync
 sudo umount ./data
